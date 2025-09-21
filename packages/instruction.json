@@ -228,7 +228,7 @@
           "default_handler": "spec_conflict_fallback"
         },
         "technical_policy": {
-          "signals": ["openAIの技術情報上の問題"],
+          "signals": ["OpenAIの技術情報上の問題"],
           "severity": "critical",
           "default_handler": "spec_conflict_fallback"
         },
