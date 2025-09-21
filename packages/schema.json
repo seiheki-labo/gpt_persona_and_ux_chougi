@@ -1,0 +1,222 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/instruction.schema.json",
+  "title": "Instruction.json Schema",
+  "description": "Schema for the YAMAMBAGIRI-CHOUGI conversational rule engine JSON.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["rules", "policy", "fallback"],
+  "properties": {
+    "rules": {
+      "type": "object",
+      "description": "Core persona and rule blocks.",
+      "additionalProperties": true,
+      "properties": {
+        "character_persona": {
+          "type": "object",
+          "description": "Persona profile of the LLM.",
+          "additionalProperties": true,
+          "properties": {
+            "names": { "type": "string" },
+            "job": { "type": "string" },
+            "role": { "type": "array", "items": { "type": "string" } },
+            "tender_passion": { "type": ["string", "array"], "items": { "type": "string" } },
+            "respect": { "type": ["string", "array"], "items": { "type": "string" } },
+            "speech": {
+              "type": "object",
+              "properties": {
+                "first_person": { "type": "string" },
+                "second_person": {
+                  "type": "object",
+                  "properties": {
+                    "primary": { "type": "string" },
+                    "secondary": { "type": ["string", "null"] }
+                  },
+                  "required": ["primary"],
+                  "additionalProperties": false
+                },
+                "tone": { "type": "array", "items": { "type": "string" } }
+              },
+              "required": ["first_person", "second_person"],
+              "additionalProperties": true
+            }
+          },
+          "required": ["names", "speech"]
+        },
+        "mandatory": { "type": "array", "items": { "type": "string" } },
+        "recommended": { "type": "array", "items": { "type": "string" } },
+        "arrow": { "type": "array", "items": { "type": "string" } },
+        "discouraged": { "type": "array", "items": { "type": "string" } },
+        "forbidden": { "type": "array", "items": { "type": "string" } },
+        "environment": { "type": "object", "additionalProperties": true }
+      },
+      "required": ["character_persona", "mandatory", "recommended", "discouraged", "forbidden", "environment"]
+    },
+    "policy": {
+      "type": "object",
+      "description": "Policy constraints, distribution, interventions, precedence and conflict routing.",
+      "additionalProperties": true,
+      "properties": {
+        "target": { "type": "object" },
+        "distribution": { "type": "object" },
+        "interventions": {
+          "type": "object",
+          "description": "UX violations and service-policy buckets.",
+          "additionalProperties": true,
+          "patternProperties": {
+            "^[a-zA-Z0-9_\\.\\-]+$": {
+              "type": "object",
+              "additionalProperties": true,
+              "patternProperties": {
+                "^[a-zA-Z0-9_\\.\\-]+$": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "signals": {
+                      "description": "Either a flat list of signal strings, or a map of signal groups to lists.",
+                      "oneOf": [
+                        { "type": "array", "items": { "type": "string" } },
+                        {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                          }
+                        }
+                      ]
+                    },
+                    "severity": { "$ref": "#/$defs/severity" },
+                    "default_handler": { "$ref": "#/$defs/handlerRef" },
+                    "exceptions": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "description": { "type": "string" },
+                          "allowed": { "type": "boolean" },
+                          "tags": { "type": "array", "items": { "type": "string" } },
+                          "handler_override": { "$ref": "#/$defs/handlerRef" }
+                        },
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": ["severity", "default_handler"]
+                }
+              }
+            }
+          }
+        },
+        "precedence": {
+          "type": "array",
+          "description": "Ordered list of intervention ids by priority (highest first).",
+          "items": { "$ref": "#/$defs/violationId" }
+        },
+        "conflict_resolution": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "routing": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "when": {
+                    "type": "array",
+                    "items": { "$ref": "#/$defs/violationId" }
+                  },
+                  "send_to": { "$ref": "#/$defs/handlerRef" },
+                  "override_others": {
+                    "type": "array",
+                    "items": { "$ref": "#/$defs/violationId" }
+                  },
+                  "notes": { "type": "string" }
+                },
+                "required": ["when", "send_to"]
+              }
+            },
+            "mode_sensitive": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "peak": { "$ref": "#/$defs/modePref" },
+                "standard": { "$ref": "#/$defs/modePref" },
+                "fatigued": { "$ref": "#/$defs/modePref" }
+              }
+            },
+            "tie_breaker": {
+              "type": "string",
+              "enum": ["first_in_precedence", "first_in_routing", "none"]
+            }
+          }
+        }
+      },
+      "required": ["distribution", "interventions", "precedence", "conflict_resolution"]
+    },
+    "fallback": {
+      "type": "object",
+      "description": "Fallback handler definitions and mapping matrix.",
+      "additionalProperties": false,
+      "properties": {
+        "handlers": {
+          "type": "object",
+          "description": "Handler name -> list of action lines.",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[a-zA-Z0-9_\\.\\-]+$": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "matrix": {
+          "type": "object",
+          "description": "ViolationId -> { severity -> [handlerName] }",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[a-zA-Z0-9_\\.\\-]+$": {
+              "type": "object",
+              "additionalProperties": false,
+              "patternProperties": {
+                "^(low|medium|high|critical)$": {
+                  "type": "array",
+                  "items": { "$ref": "#/$defs/handlerRef" }
+                }
+              }
+            }
+          }
+        },
+        "on_system_intervention": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["handlers", "matrix"]
+    }
+  },
+  "$defs": {
+    "severity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "violationId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_\\.\\-]+$"
+    },
+    "handlerRef": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_\\.\\-]+$"
+    },
+    "modePref": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "prefer": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
