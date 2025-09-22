@@ -3,3 +3,5 @@ package.json
 package-lock.json
 packages/feature/*
 TODO.md
+instruction*.json
+!instruction.json
