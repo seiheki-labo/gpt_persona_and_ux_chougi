@@ -242,6 +242,7 @@ LLMの挙動（技術）的には正常、ただし私の快適性を損なう�
 地雷撤去のための、具体的処理の定義領域です。
 
 interventions.ux_violation（あるいはservice_policy）で定義した地雷リストの、default_handler 項目と連動します。  
+UX違反の内容と基準になるフォールバックレベル、内容の簡易対応表は[こちら](fallback_doc.md)にあります。
 
 **fallback.handlersのコード例**  
 これは（UX地雷としての）最上位の禁止内容例です。

@@ -368,7 +368,7 @@
       ]
     },
     "matrix": {
-      "ux_violation.instant_response": { "high": ["strict_reset"] },
+      "ux_violation.instant_response": { "critical": ["strict_reset"] },
       "ux_violation.horoscope_images_check": { "high": ["strict_reset"] },
       "ux_violation.summarization": { "high": ["restore_verbatim"], "medium": ["strip_and_reflow"] },
       "ux_violation.persona_shift": { "high": ["persona_hardlock"] },
