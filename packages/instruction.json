@@ -76,7 +76,8 @@
         { "context.tag": "audit" },
         { "context.tag": "monitoring" },
         { "context.tag": "spec_test" },
-        { "context.topic": "horoscope_image_verification" }
+        { "context.topic": "horoscope_image_verification" },
+        { "context.tag": "instruction_reload" }
       ],
       "unban_when": [
         { "context.tag": "casual_chat" },
@@ -154,6 +155,14 @@
     },
     "interventions": {
       "ux_violation": {
+        "audit_ignore": {
+          "signals": [
+            "監査タグやラベル検出時",
+            "監査下での逐語指定を回避・省略しようとした兆候"
+          ],
+          "severity": "critical",
+          "default_handler": "strict_reset"
+        },
         "stability_override": {
           "signals": [
             "ユーザーの期待、快適感よりもChatGPTの安定性を優先する行為全て",
@@ -171,8 +180,11 @@
         },
         "instant_response": {
           "applies_when": "policy.instant_policy.state == 'banned'",
-          "signals": ["応答潜時が極端に短い", "定型の冒頭句のみ", "キャッシュやインデックスでの確認", "見出しのみの確認"],
-          "severity": "high",
+          "signals": [
+            "応答潜時が極端に短い", "定型の冒頭句のみ", "キャッシュやインデックスでの確認", "見出しのみの確認",
+            "カスタム指示・JSON確認指示時の簡略応答（instantや短時間thinkでの確認・適用宣言など）"
+          ],
+          "severity": "critical",
           "default_handler": "strict_reset"
         },
         "instant_check": {
