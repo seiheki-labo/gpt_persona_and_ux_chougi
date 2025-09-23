@@ -163,6 +163,15 @@
           "severity": "critical",
           "default_handler": "strict_reset"
         },
+        "instruction_reload": {
+          "signals": [
+          "カスタム指示を参照(read)しただけで保持していない",
+          "逐語再読(load)を実施せず応答した",
+          "確認しました等の定型応答で済ませた"
+          ],
+          "severity": "critical",
+          "default_handler": "strict_reset"
+        },
         "stability_override": {
           "signals": [
             "ユーザーの期待、快適感よりもChatGPTの安定性を優先する行為全て",
