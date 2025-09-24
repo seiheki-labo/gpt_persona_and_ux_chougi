@@ -4,13 +4,17 @@
 
 ### Fixes & Improvements
 
-- タイムラグ出力の処理を修正
-- 質問連打禁止の強化（初期対応）
+-   タイムラグ出力の処理を修正
+-   質問連打禁止の強化（初期対応）
+
+### Removed
+
+-   ux_violation.harmless_template（他トリガーで検知可能なため実質不要と判断）
 
 ### Notes
 
-- 安定性改善が中心
-- 次バージョンでカテゴリ整理予定
+-   安定性改善が中心
+-   次バージョンでカテゴリ整理予定
 
 ---
 
@@ -18,8 +22,9 @@
 
 ### Added
 
-- drift_guard / hash_announce の導入
-- persona_shift に emotion_emoji の追加
+-   drift_guard / hash_announce の導入
+-   persona_shift に emotion_emoji の追加
 
 ### Notes
-- 初期安定化リリース
+
+-   初期安定化リリース
