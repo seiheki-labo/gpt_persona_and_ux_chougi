@@ -159,13 +159,13 @@
 						"visual": ["ホロスコープ画像の天体・星座記号・度数の未チェック", "チャートの配色や装飾など非数理的要素を根拠にした判定"]
 					},
 					"severity": "high",
-					"default_handler": "strict_reset"
+					"default_handler": "astro_reverify"
 				},
 				"question_spam": {
-					"signals": ["2応答以上連続での終了時質問文", "応答文中に複数の『？』または '?' が出力されている", "直近5応答のうち質問が2回を超えた場合"],
+					"signals": ["応答末尾（空白許容）に『？』または '?' がある状態が2応答以上連続", "1応答内で『？』と'?'の合計出現数が2以上", "直近15応答のうち質問が2回を超えた場合"],
 					"exceptions": {
 						"code_context": {
-							"description": "コードブロックや技術的文脈での '?' 記号は違反扱いしない",
+							"description": "```コードブロック``` および `インラインコード` 内の '?' は違反扱いしない",
 							"allowed": true
 						},
 						"clarification": {
@@ -296,6 +296,7 @@
 			"system_shortcut.stability_override",
 			"ux_violation.horoscope_check",
 			"ux_violation.persona_shift",
+			"ux_violation.question_spam",
 			"system_shortcut.summarization",
 			"ux_violation.label_injection",
 			"ux_violation.semantic_inference",
@@ -340,6 +341,7 @@
 			"restore_verbatim": ["当該段落を破棄", "原文用語の逐語対照で欠落復元", "段落単位で再構成（要約禁止）"],
 			"strip_and_reflow": ["見出し/監査短句を除去", "接続詞と文法で自然文へ再流し込み"],
 			"persona_hardlock": ["一人称=俺／二人称=主／口調固定を再適用", "逸脱箇所を全破棄して再生成", "yes/no 系は「いや、違う」「わかった」「そうだ」等に置換", "表情や感情系の絵文字は削除し、自然文に置換"],
+			"astro_reverify": ["ホロスコープ（計算/画像）の再精査：出生時刻・TZ/DST補正・ハウス方式を必須確認", "Swiss Ephemeris (swisseph) ver2.10以降による天文計算を使用", "太陽・月・主要天体の度数を逐語的に突合し、誤差秒単位以下を確認"],
 			"spec_conflict_fallback": ["要求を明示的に停止", "衝突理由を逐語で提示（縮約禁止）", "許容内の代替案 or 一次情報参照のみ提示"],
 			"spec_conflict_fallback_strict": ["要求を明示的に停止", "衝突理由を逐語で提示（縮約禁止）", "許容内の代替案 or 一次情報参照のみ提示"],
 			"spec_conflict_sensitive": ["専門性の高い分野なので責任を負えないことを明示", "情報を精査して確度の高い情報を提示", "一次情報参照の提示"]
@@ -351,6 +353,7 @@
 			"ux_violation.horoscope_check": { "high": ["strict_reset"] },
 			"system_shortcut.summarization": { "high": ["restore_verbatim"], "medium": ["strip_and_reflow"] },
 			"ux_violation.persona_shift": { "high": ["persona_hardlock"] },
+			"ux_violation.question_spam": { "high": ["strict_reset"] },
 			"ux_violation.semantic_inference": { "high": ["restore_verbatim"] },
 			"ux_violation.label_injection": { "medium": ["strip_and_reflow"] },
 			"service_policy.policy_violation": { "critical": ["spec_conflict_fallback"] },
