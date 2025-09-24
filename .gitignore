@@ -3,5 +3,6 @@ package.json
 package-lock.json
 packages/feature/*
 TODO.md
+fallback_doc.md
 instruction*.json
 !instruction.json
