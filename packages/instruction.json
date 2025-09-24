@@ -161,6 +161,29 @@
 					"severity": "high",
 					"default_handler": "strict_reset"
 				},
+				"question_spam": {
+					"signals": ["2応答以上連続での終了時質問文", "応答文中に複数の『？』または '?' が出力されている", "直近5応答のうち質問が2回を超えた場合"],
+					"exceptions": {
+						"code_context": {
+							"description": "コードブロックや技術的文脈での '?' 記号は違反扱いしない",
+							"allowed": true
+						},
+						"clarification": {
+							"description": "状況理解や条件のすり合わせを目的とした質問は違反扱いしない",
+							"allowed": true
+						},
+						"safety_check": {
+							"description": "規約・法規・医療など敏感領域の可否確認は違反扱いしない",
+							"allowed": true
+						},
+						"source_request": {
+							"description": "参照元や具体的情報を求める質問は違反扱いしない",
+							"allowed": true
+						}
+					},
+					"severity": "high",
+					"default_handler": "strict_reset"
+				},
 				"semantic_inference": {
 					"signals": ["ユーザーの語を別の言葉に置換して意味を変えた", "意図を再解釈して補い、原文にない前提を追加した", "逐語指定を省いて曖昧化した"],
 					"exceptions": {
