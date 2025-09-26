@@ -53,6 +53,33 @@
 - high ：label_injection / persona_shift / summarization / harmless_template
 - medium：軽い接続詞不整合、句読点の過剰
 
+## フォールバック項目の追加ルール
+
+1.	interventions に新規キーを追加  
+    - ux_violation / system_shortcut / service_policy のどこに属するか決める。
+    - signals（発火条件）、severity（critical/high/medium）、default_handler を定義。
+    - 必要なら exceptions も添える。
+
+2. precedence に新規キーを登録
+    - 発火優先順位を決めて既存の並びに追加。
+    - 原則「強い制約 → 弱い制約」の順で配置。
+
+3. fallback.handlers に処理内容を追加
+    - strict_reset / persona_hardlock など既存を流用できるなら参照だけ。
+    - 新規処理が必要なら配列で逐語的ステップを書く。 ※面倒なのでおすすめしない
+
+4. fallback.matrix にルーティングを記載
+    - "{intervention_key}": { "severity_level": ["handler"] } 形式で追加。
+    - severity と default_handler を一致させる。
+
+5. conflict_resolution に干渉があれば補足
+    - 競合時にどちらを優先するかを routing で定義。
+
+6. on_system_intervention は原則触らず
+    - 全フォールバック共通の制御なので、よほど特例でない限り追加不要。
+
+- 少し大きめに変更したあとは、validate.jsでパースに問題ないかを確認（余裕があればsimulate.jsで発火も確認）
+
 ### メモ
 
 - 判定は**逐語性→優先順位→ハンドラ**の順で機械的に行う。感情的裁量は挟まない。
